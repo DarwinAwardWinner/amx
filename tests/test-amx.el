@@ -95,7 +95,6 @@ equal."
        amx-save-file
        amx-history-length
        amx-show-key-bindings
-       amx-prompt-string
        amx-ignored-command-matchers
        amx-backend
        smex-save-file))
@@ -112,7 +111,6 @@ equal."
        amx-save-file
        amx-history-length
        amx-show-key-bindings
-       amx-prompt-string
        amx-ignored-command-matchers
        amx-backend
        smex-save-file)))
@@ -133,18 +131,6 @@ equal."
     (expect
      (customize-set-variable 'amx-backend 'ivy)
      :to-throw))
-
-  (it "should use the prompt string specified in `amx-prompt-string'"
-    (customize-set-variable 'amx-prompt-string "Run command: ")
-    (let (observed-prompt)
-      (expect
-       (with-simulated-input
-           '((setq observed-prompt (buffer-substring (point-min) (point)))
-             "ignore RET")
-         (amx-completing-read '("ignore")))
-       :to-equal "ignore")
-      (expect observed-prompt
-              :to-match amx-prompt-string)))
 
   (it "should activate `amx-map' while running amx"
 

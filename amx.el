@@ -219,10 +219,6 @@ Enabling this feature can cause a noticeable delay when running
 nil) if you don't find it useful."
   :type 'boolean)
 
-(defcustom amx-prompt-string "M-x "
-  "String to display in the Amx prompt."
-  :type 'string)
-
 (defcustom amx-ignored-command-matchers
   '("self-insert-command"
     "\\`self-insert-and-exit\\'"
@@ -454,7 +450,9 @@ minibuffer.."
 (defun amx-prompt-with-prefix-arg ()
   "Return `amx-prompt-string' with the prefix arg prepended."
   (let ((amx-prompt-string
-         (or amx-temp-prompt-string amx-prompt-string)))
+         (or amx-temp-prompt-string
+	     (format "%s "
+		     (format-kbd-macro (this-single-command-keys))))))
     (setq amx-temp-prompt-string nil)
     (if (not current-prefix-arg)
         amx-prompt-string
