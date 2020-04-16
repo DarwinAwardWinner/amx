@@ -609,6 +609,36 @@ May not work for things like ido and ivy."
  :exit-fun 'helm-confirm-and-exit-minibuffer
  :required-feature 'helm)
 
+(declare-function selectrum-read "ext:selectrum")
+(declare-function selectrum--normalize-collection "ext:selectrum")
+(defvar selectrum-should-sort-p)
+(defvar selectrum--previous-input-string)
+
+(cl-defun amx-completing-read-selectrum (choices &key initial-input predicate def)
+  "Amx backend for selectrum completion."
+  (let ((choices (cl-remove-if-not (or predicate #'identity)
+                                   choices))
+        (selectrum-should-sort-p nil))
+    (minibuffer-with-setup-hook
+        (lambda ()
+          (use-local-map (make-composed-keymap
+                          (list amx-map (current-local-map)))))
+      (selectrum-read (amx-prompt-with-prefix-arg)
+                      (selectrum--normalize-collection choices)
+                      :history 'extended-command-history
+                      :require-match t
+                      :default-candidate def
+                      :initial-input initial-input))))
+
+(defun amx-selectrum-get-text ()
+  selectrum--previous-input-string)
+
+(amx-define-backend
+ :name 'selectrum
+ :comp-fun 'amx-completing-read-selectrum
+ :get-text-fun 'amx-selectrum-get-text
+ :required-feature 'selectrum)
+
 (cl-defun amx-completing-read-auto (choices &key initial-input predicate def)
   "Automatically select the appropriate completion system for M-x."
   (let ((backend
