@@ -626,7 +626,8 @@ May not work for things like ido and ivy."
                   :buffer "Helm M-x Completions"
                   :history extended-command-history
                   :reverse-history t
-                  :must-match t
+                  :must-match nil
+		  :fuzzy t
                   :keymap (make-composed-keymap amx-map helm-comp-read-map)))
 
 (amx-define-backend
